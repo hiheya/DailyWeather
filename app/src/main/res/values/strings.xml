@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">DailyWeather</string>
-    <string name="input_address">输入地址</string>
+    <string name="input_address">input address</string>
 </resources>

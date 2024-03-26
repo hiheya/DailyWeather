@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="input_address">输入地址</string>
+    <string name="app_name">DailyWeather</string>
+    <string name="input_address">input address</string>
 </resources>
