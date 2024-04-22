@@ -24,5 +24,5 @@ import work.icu007.dailyweather.logic.model.PlaceResponse
 * */
 interface PlaceService {
     @GET("v2/place?token=${DailyWeatherApplication.TOKEN}&lang=zh_CN")
-    fun searchPlace(@Query("query") query: String) : Call<PlaceResponse>
+    fun searchPlaces(@Query("query") query: String) : Call<PlaceResponse>
 }
