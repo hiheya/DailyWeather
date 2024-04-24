@@ -24,6 +24,9 @@ object DailyWeatherNetwork {
     suspend fun getRealtimeWeather(lng: String, lat: String) =
         weatherService.getRealtimeWeather(lng, lat).await()
 
+    suspend fun getHourlyWeather(lng: String, lat: String) =
+        weatherService.getHourlyWeather(lng, lat).await()
+
     // 这里使用ServiceCreator创建了一个PlaceService接口的动态代理对象
     private val placeService = ServiceCreator.create<PlaceService>()
 

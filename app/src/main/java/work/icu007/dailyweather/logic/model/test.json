@@ -1,0 +1,15 @@
+{
+  "status": "ok",
+  "result": {
+    "daily": {
+      "temperature": [ {"max": 25.7, "min": 20.3}, ... ],
+      "skycon": [ {"value": "CLOUDY", "date":"2019-10-20T00:00+08:00"}, ... ],
+      "life_index": {
+        "coldRisk": [ {"desc": "易发"}, ... ],
+        "carWashing": [ {"desc": "适宜"}, ... ],
+        "ultraviolet": [ {"desc": "无"}, ... ],
+        "dressing": [ {"desc": "舒适"}, ... ]
+      }
+    }
+  }
+}

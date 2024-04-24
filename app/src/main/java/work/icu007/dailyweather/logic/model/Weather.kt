@@ -7,4 +7,4 @@ package work.icu007.dailyweather.logic.model
  * E-mail: rookie_l@icu007.work
  */
 
-data class Weather(val realtime: RealtimeResponse.Realtime, val daily: DailyResponse.Daily)
+data class Weather(val realtime: RealtimeResponse.Realtime, val daily: DailyResponse.Daily, val hourlyResponse: HourlyResponse)

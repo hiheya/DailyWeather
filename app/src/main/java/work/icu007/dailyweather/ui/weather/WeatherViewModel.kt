@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import work.icu007.dailyweather.logic.Repository
+import work.icu007.dailyweather.logic.model.HourlyResponse.Hourly
 import work.icu007.dailyweather.logic.model.Location
 
 
@@ -19,6 +20,7 @@ class WeatherViewModel : ViewModel() {
     var locationLng = ""
     var locationLat = ""
     var placeName = ""
+    val hourlyList = ArrayList<Hourly>()
 
     val weatherLiveData = locationLiveData.switchMap { location ->
         Repository.refreshWeather(locationLng, locationLat)

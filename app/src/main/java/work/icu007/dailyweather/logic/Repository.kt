@@ -1,5 +1,6 @@
 package work.icu007.dailyweather.logic
 
+import android.util.Log
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -42,12 +43,18 @@ object Repository {
                 DailyWeatherNetwork.getDailyWeather(lng, lat)
             }
 
+            val deferHourly = async {
+                DailyWeatherNetwork.getHourlyWeather(lng, lat)
+            }
+
             val realtimeResponse = deferredRealtime.await()
             val dailyResponse = deferredDaily.await()
+            val hourlyResponse = deferHourly.await()
 
-            if (realtimeResponse.status == "ok" && dailyResponse.status == "ok") {
+            if (realtimeResponse.status == "ok" && dailyResponse.status == "ok" && hourlyResponse.status == "ok") {
                 val weather =
-                    Weather(realtimeResponse.result.realtime, dailyResponse.result.daily)
+                    Weather(realtimeResponse.result.realtime, dailyResponse.result.daily, hourlyResponse)
+                Log.d("Repository", "refreshWeather: weather = $weather")
                 Result.success(weather)
             } else {
                 Result.failure(

@@ -10,20 +10,30 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import work.icu007.dailyweather.R
 import work.icu007.dailyweather.databinding.ActivityWeatherBinding
+import work.icu007.dailyweather.logic.model.HourlyResponse
 import work.icu007.dailyweather.logic.model.Weather
 import work.icu007.dailyweather.logic.model.getSky
+import work.icu007.dailyweather.ui.place.HourlyAdapter
 import java.text.SimpleDateFormat
+import java.util.ArrayList
 import java.util.Locale
 
 class WeatherActivity : AppCompatActivity() {
     private val viewModel by lazy { ViewModelProvider(this).get(WeatherViewModel::class.java) }
+    private lateinit var adapter: HourlyAdapter // 适配器
     private lateinit var aWeatherBinding: ActivityWeatherBinding
+    private lateinit var mRecycleView : RecyclerView // RecyclerView 的引用
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         aWeatherBinding = ActivityWeatherBinding.inflate(layoutInflater)
+        mRecycleView = aWeatherBinding.hourlyLayout.hourlyRecyclerView
+        val layoutManager = LinearLayoutManager(this)
+        mRecycleView.layoutManager = layoutManager
         setContentView(aWeatherBinding.root)
 
         if (viewModel.locationLng.isEmpty()) {
@@ -46,10 +56,14 @@ class WeatherActivity : AppCompatActivity() {
         viewModel.weatherLiveData.observe(this) { result ->
             val weather = result.getOrNull()
             if (weather != null) {
-                showWeatherInfo(weather)
+                viewModel.hourlyList.clear()
+                viewModel.hourlyList.add(weather.hourlyResponse.result.hourly)
             } else {
                 Toast.makeText(this, "无法成功获取到天气信息", Toast.LENGTH_SHORT).show()
                 result.exceptionOrNull()?.printStackTrace()
+            }
+            if (weather != null) {
+                showWeatherInfo(weather)
             }
         }
         viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
@@ -59,6 +73,19 @@ class WeatherActivity : AppCompatActivity() {
         aWeatherBinding.nowLayout.placeName.text = viewModel.placeName
         val realtime = weather.realtime
         val daily = weather.daily
+        val hourly = weather.hourlyResponse
+
+        // inflate hourly
+        mRecycleView = aWeatherBinding.hourlyLayout.hourlyRecyclerView
+        val hourlyTitle = hourly.result.hourly.description
+        aWeatherBinding.hourlyLayout.descriptionText.text = hourlyTitle
+        // 给 RecyclerView 设置适配器
+        adapter = HourlyAdapter(viewModel.hourlyList)
+        aWeatherBinding.hourlyLayout.hourlyRecyclerView.adapter = adapter
+        // 设置LayoutManager为LinearLayoutManager 水平方向
+        aWeatherBinding.hourlyLayout.hourlyRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
 
         // inflate now
         val currentTempText = "${realtime.temperature.toInt()} ℃"

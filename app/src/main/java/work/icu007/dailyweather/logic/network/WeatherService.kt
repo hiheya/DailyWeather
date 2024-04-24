@@ -5,6 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import work.icu007.dailyweather.DailyWeatherApplication
 import work.icu007.dailyweather.logic.model.DailyResponse
+import work.icu007.dailyweather.logic.model.HourlyResponse
 import work.icu007.dailyweather.logic.model.RealtimeResponse
 
 
@@ -26,4 +27,10 @@ interface WeatherService {
         @Path("lng") lng: String,
         @Path("lat") lat: String
     ): Call<DailyResponse>
+
+    @GET("v2.6/${DailyWeatherApplication.TOKEN}/{lng},{lat}/hourly?hourlysteps=24")
+    fun getHourlyWeather(
+        @Path("lng") lng: String,
+        @Path("lat") lat: String
+    ): Call<HourlyResponse>
 }
