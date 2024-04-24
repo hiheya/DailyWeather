@@ -5,6 +5,8 @@ import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import work.icu007.dailyweather.logic.dao.PlaceDao
+import work.icu007.dailyweather.logic.model.Place
 import work.icu007.dailyweather.logic.model.Weather
 import work.icu007.dailyweather.logic.network.DailyWeatherNetwork
 import kotlin.coroutines.CoroutineContext
@@ -76,4 +78,7 @@ object Repository {
             }
             emit(result)
         }
+    fun savePlace(place: Place) = PlaceDao.savePlace(place)
+    fun getSavedPlace() = PlaceDao.getSavedPlace()
+    fun isPlaceSaved() = PlaceDao.isPlaceSaved()
 }
