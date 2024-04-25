@@ -5,4 +5,5 @@
     <color name="colorPrimary">#303030</color>
     <color name="colorPrimaryDark">#232323</color>
     <color name="colorAccent">#008577</color>
+    <color name="cardBgColor">#80202020</color>
 </resources>

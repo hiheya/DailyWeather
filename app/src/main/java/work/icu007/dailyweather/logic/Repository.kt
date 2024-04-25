@@ -28,7 +28,7 @@ object Repository {
             Result.failure(
                 RuntimeException(
                     "response status is" +
-                            "${placeResponse.status}"
+                            placeResponse.status
                 )
             )
         }
@@ -55,7 +55,7 @@ object Repository {
 
             if (realtimeResponse.status == "ok" && dailyResponse.status == "ok" && hourlyResponse.status == "ok") {
                 val weather =
-                    Weather(realtimeResponse.result.realtime, dailyResponse.result.daily, hourlyResponse)
+                    Weather(realtimeResponse.result.realtime, dailyResponse.result.daily, hourlyResponse.result.hourly)
                 Log.d("Repository", "refreshWeather: weather = $weather")
                 Result.success(weather)
             } else {

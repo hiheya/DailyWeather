@@ -1,5 +1,6 @@
 package work.icu007.dailyweather.ui.place
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import work.icu007.dailyweather.MainActivity
 import work.icu007.dailyweather.databinding.FragmentPlaceBinding
 import work.icu007.dailyweather.ui.weather.WeatherActivity
 
@@ -38,9 +40,10 @@ class PlaceFragment : Fragment() {
         return pFBinding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (viewModel.isPlaceSaved()) {
+        if (activity is MainActivity && viewModel.isPlaceSaved()) {
             val place = viewModel.getSavedPlace()
             val intent = Intent(context, WeatherActivity::class.java).apply {
                 putExtra("location_lng", place.location.lng)

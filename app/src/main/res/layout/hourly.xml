@@ -4,10 +4,11 @@
     android:id="@+id/hourlyLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:cardBackgroundColor="@color/cardBgColor"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginTop="15dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

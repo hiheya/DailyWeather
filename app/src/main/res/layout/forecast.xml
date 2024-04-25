@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/cardBgColor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginTop="15dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="10dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -18,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="20dp"
-            android:text="预报"
+            android:text="@string/forecast"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp"/>
 

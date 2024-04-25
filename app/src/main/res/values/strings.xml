@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">DailyWeather</string>
-    <string name="input_address">input address</string>
+    <string name="input_address">Input Address</string>
+    <string name="forecast">Forecast</string>
+    <string name="living_index">Living Index</string>
+    <string name="influenza">Influenza</string>
+    <string name="feel_the_temperature">Feel the temperature</string>
+    <string name="real_time_uv_light">Real-time UV light</string>
+    <string name="car_wash">Car wash</string>
 </resources>

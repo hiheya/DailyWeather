@@ -2,4 +2,10 @@
 <resources>
     <string name="app_name">DailyWeather</string>
     <string name="input_address">input address</string>
+    <string name="forecast">预报</string>
+    <string name="living_index">生活指数</string>
+    <string name="influenza">感冒</string>
+    <string name="feel_the_temperature">体感温度</string>
+    <string name="real_time_uv_light">实时紫外线</string>
+    <string name="car_wash">洗车</string>
 </resources>

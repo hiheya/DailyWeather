@@ -1,35 +1,53 @@
 package work.icu007.dailyweather.ui.weather
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import work.icu007.dailyweather.R
 import work.icu007.dailyweather.databinding.ActivityWeatherBinding
-import work.icu007.dailyweather.logic.model.HourlyResponse
 import work.icu007.dailyweather.logic.model.Weather
 import work.icu007.dailyweather.logic.model.getSky
 import work.icu007.dailyweather.ui.place.HourlyAdapter
 import java.text.SimpleDateFormat
-import java.util.ArrayList
 import java.util.Locale
 
 class WeatherActivity : AppCompatActivity() {
-    private val viewModel by lazy { ViewModelProvider(this).get(WeatherViewModel::class.java) }
+    val viewModel by lazy { ViewModelProvider(this)[WeatherViewModel::class.java] }
     private lateinit var adapter: HourlyAdapter // 适配器
     private lateinit var aWeatherBinding: ActivityWeatherBinding
-    private lateinit var mRecycleView : RecyclerView // RecyclerView 的引用
+    private lateinit var mRecycleView: RecyclerView // RecyclerView 的引用
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        // 设置状态栏透明
+        val decorView = window.decorView
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        var systemUiVisibility = decorView.systemUiVisibility
+        systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        decorView.systemUiVisibility = systemUiVisibility
+        window.statusBarColor = Color.TRANSPARENT
+
+        val isNightMode = resources.configuration.uiMode == Configuration.UI_MODE_NIGHT_MASK
+        setStatusBarTextColor(window, isNightMode)
+
         aWeatherBinding = ActivityWeatherBinding.inflate(layoutInflater)
         mRecycleView = aWeatherBinding.hourlyLayout.hourlyRecyclerView
         val layoutManager = LinearLayoutManager(this)
@@ -53,34 +71,68 @@ class WeatherActivity : AppCompatActivity() {
             "onCreate: viewModelLNG: ${viewModel.locationLng}, viewModelLAT: ${viewModel.locationLat}, viewModelPlaceName: ${viewModel.placeName}"
         )
 
+        // 滑动菜单
+        aWeatherBinding.nowLayout.navBtn.setOnClickListener {
+            aWeatherBinding.drawerLayout.open()
+        }
+
+        aWeatherBinding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+            }
+
+            @SuppressLint("ServiceCast")
+            override fun onDrawerClosed(drawerView: View) {
+                val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(drawerView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+            }
+        })
+
         viewModel.weatherLiveData.observe(this) { result ->
             val weather = result.getOrNull()
             if (weather != null) {
-                viewModel.hourlyList.clear()
-                viewModel.hourlyList.add(weather.hourlyResponse.result.hourly)
+                viewModel.hourly = weather.hourly
+                showWeatherInfo(weather)
             } else {
                 Toast.makeText(this, "无法成功获取到天气信息", Toast.LENGTH_SHORT).show()
                 result.exceptionOrNull()?.printStackTrace()
             }
-            if (weather != null) {
-                showWeatherInfo(weather)
-            }
+            aWeatherBinding.swipeRefresh.isRefreshing = false
         }
+        aWeatherBinding.swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
+        refreshWeather()
+        aWeatherBinding.swipeRefresh.setOnRefreshListener {
+            refreshWeather()
+        }
+    }
+
+    fun refreshWeather() {
         viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
+        aWeatherBinding.swipeRefresh.isRefreshing = true
     }
 
     private fun showWeatherInfo(weather: Weather) {
+
+        // 毛玻璃效果
+
+
+
         aWeatherBinding.nowLayout.placeName.text = viewModel.placeName
         val realtime = weather.realtime
         val daily = weather.daily
-        val hourly = weather.hourlyResponse
+        val hourly = weather.hourly
 
         // inflate hourly
         mRecycleView = aWeatherBinding.hourlyLayout.hourlyRecyclerView
-        val hourlyTitle = hourly.result.hourly.description
+        val hourlyTitle = hourly.description
         aWeatherBinding.hourlyLayout.descriptionText.text = hourlyTitle
         // 给 RecyclerView 设置适配器
-        adapter = HourlyAdapter(viewModel.hourlyList)
+        adapter = HourlyAdapter(viewModel.hourly)
         aWeatherBinding.hourlyLayout.hourlyRecyclerView.adapter = adapter
         // 设置LayoutManager为LinearLayoutManager 水平方向
         aWeatherBinding.hourlyLayout.hourlyRecyclerView.layoutManager =
@@ -94,7 +146,8 @@ class WeatherActivity : AppCompatActivity() {
         val currentPM25Text = "空气指数 ${realtime.airQuality.aqi.chn.toInt()}"
         aWeatherBinding.nowLayout.currentAQI.text = currentPM25Text
 
-        aWeatherBinding.nowLayout.nowLayout.setBackgroundResource(getSky(realtime.skycon).bg)
+//        aWeatherBinding.nowLayout.nowLayout.setBackgroundResource(getSky(realtime.skycon).bg)
+        aWeatherBinding.weatherLayout.setBackgroundResource(getSky(realtime.skycon).bg)
 
         // inflate forecast
         aWeatherBinding.forecastLayout.forecastLayout.removeAllViews()
@@ -138,5 +191,15 @@ class WeatherActivity : AppCompatActivity() {
         aWeatherBinding.lifeIndexLayout.ultravioletText.text = lifeIndex.ultraviolet[0].desc
         aWeatherBinding.lifeIndexLayout.carWashingText.text = lifeIndex.carWashing[0].desc
         aWeatherBinding.weatherLayout.visibility = View.VISIBLE
+    }
+
+    fun setStatusBarTextColor(window: Window, light: Boolean) {
+        var systemUiVisibility = window.decorView.systemUiVisibility
+        systemUiVisibility = if (light) { //白色文字
+            systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+        } else { //黑色文字
+            systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+        window.decorView.systemUiVisibility = systemUiVisibility
     }
 }

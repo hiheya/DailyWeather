@@ -25,7 +25,7 @@ import java.util.Locale
  * E-mail: charlie.liao@icu007.work
  */
 
-class HourlyAdapter(private val hourlyList: List<Hourly>) : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
+class HourlyAdapter(private val hourly: Hourly) : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val dateTime: TextView = view.findViewById(R.id.hourlyItemDateTimeText)
         val temperature: TextView = view.findViewById(R.id.hourlyItemTemperatureText)
@@ -38,12 +38,11 @@ class HourlyAdapter(private val hourlyList: List<Hourly>) : RecyclerView.Adapter
         return ViewHolder(itemView)
     }
 
-    override fun getItemCount() = hourlyList[0].precipitation.size
+    override fun getItemCount() = hourly.precipitation.size
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val hourly = hourlyList[0]
         /*for (i in 1..20) {
             Log.d("HourlyAdapter", "onBindViewHolder: datetime: ${hourly.precipitation[i].datetime}, temperature: ${hourly.temperature[i].value}, precipitation: ${hourly.precipitation[i].probability}")
         }*/

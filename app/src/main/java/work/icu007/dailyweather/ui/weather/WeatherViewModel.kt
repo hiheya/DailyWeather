@@ -20,9 +20,9 @@ class WeatherViewModel : ViewModel() {
     var locationLng = ""
     var locationLat = ""
     var placeName = ""
-    val hourlyList = ArrayList<Hourly>()
+    var hourly = Hourly("", "", emptyList(), emptyList(), emptyList())
 
-    val weatherLiveData = locationLiveData.switchMap { location ->
+    val weatherLiveData = locationLiveData.switchMap { _ ->
         Repository.refreshWeather(locationLng, locationLat)
     }
 
